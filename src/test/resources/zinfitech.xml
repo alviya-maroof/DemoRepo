@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="1" name="Zinfi automation" annotations="JDK" thread-count="1"
+  data-provider-thread-count="1">
+  <parameter name="azure.enable" value="false"/>
+  <parameter name="azure.url" value="https://zinfitech.visualstudio.com"/>
+  <parameter name="azure.username" value="ramesh.patil@qapitol.com"/>
+  <parameter name="azure.auth.token" value="42dlegd5dpraurmwwz5yoba6j6dyrqft56sehdympn3ckcxybyma"/>
+  <parameter name="azure.test.plan" value="35216"/>
+  <parameter name="azure.project.name" value="UCMGen3"/>
+  <parameter name="azure.create.bug" value="false"/>
+  <parameter name="pagesPackage" value="com.zinfitech.context"/>
+  <parameter name="azure.testrun.name" value="azure test plan"/>
+  <test name="Zinfi Testcases">
+    <parameter name="sessions" value="sessions.yaml"/>
+    <parameter name="customCapabilities" value="com.zinfitech.config.CustomCapabilities"/>
+    <parameter name="executionTimeout" value="30000"/>
+    <classes>
+      <class name="com.zinfitech.TestRunner"/>
+    </classes>
+  </test>
+</suite>

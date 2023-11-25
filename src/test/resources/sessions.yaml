@@ -1,0 +1,6 @@
+- name: "session_web_1"
+  local: true
+  platform: "chrome"
+  browserHeight: 1920
+  browserWidth: 1080
+  browserRunHeadless: true

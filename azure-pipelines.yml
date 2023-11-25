@@ -1,0 +1,117 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+parameters:
+  - name: env
+    displayName: env
+    type: string
+    default: ft47
+    values:
+      - ft47
+      - prod
+      - uat
+  - name: tag
+    displayName: tag
+    type: string
+    default: any
+    values:
+      - sanity
+      - any
+trigger:
+  - develop
+
+#schedules:
+#  - cron: 0 0-23 * * *
+#    displayName: Run every 1 hours
+#    branches:
+#      include:
+#        - zinfi-azure-client
+#    always: true
+
+
+jobs:
+  - job: Zinfi_Automation
+    timeoutInMinutes: 120 # how long to run the job before automatically cancelling
+    cancelTimeoutInMinutes: 2 # how much time to give 'run always even if cancelled tasks' before stopping them
+    pool:
+      name: Azure Pipelines
+      vmImage: ubuntu-20.04
+    variables:
+      MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+      MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+
+    condition:
+    steps:
+      - task: NodeTool@0
+        inputs:
+          versionSpec: '18.13.0'
+        displayName: 'Install Node.js'
+
+      - script: |
+          npm install -g allure-commandline --save-dev
+        displayName: 'Install Allure'
+        condition: succeeded()
+      - task: Cache@2
+        inputs:
+          key: 'maven | "$(Agent.OS)" | **/pom.xml'
+          restoreKeys: |
+            maven | "$(Agent.OS)"
+            maven
+          path: $(MAVEN_CACHE_FOLDER)
+        displayName: Cache Maven local repo
+      #- task: DownloadBuildArtifacts@1
+      #  inputs:
+      #    buildType: 'specific'
+      #    project: '8071f8fd-8d73-4045-8de6-bd239067b4e4'
+      #    pipeline: '5'
+      #    buildVersionToDownload: 'latest'
+      #    downloadType: 'single'
+      #    artifactName: 'allure-report'
+      #    downloadPath: '$(System.ArtifactsDirectory)'
+
+      - task: Maven@4
+        inputs:
+          mavenPomFile: 'pom.xml'
+          mavenOptions: '-Xmx3072m $(MAVEN_OPTS)'
+          goals: 'clean test'
+          options: '-s settings.xml -Denable.allure.attachments.listener=true -Dnexus-username=qa-member -Dnexus-password=j8DcRwwBxPw4e2CM -Denv=${{ parameters.env }} -Dtag=${{ parameters.tag }}'
+          publishJUnitResults: false
+          testResultsFiles: '**/surefire-reports/TEST-*.xml'
+          javaHomeOption: 'JDKVersion'
+          mavenVersionOption: 'Default'
+          mavenAuthenticateFeed: false
+          effectivePomSkip: false
+          sonarQubeRunAnalysis: false
+        displayName: 'Run test Cases for Zinfitech'
+
+      - script: |
+          allure generate allure-results -o allure-report --clean
+        displayName: 'Generate Allure Report'
+        #condition: succeeded()
+      - task: CopyFiles@2
+        displayName: 'Copy Files: AllureResults'
+        condition: always()
+        inputs:
+          SourceFolder: 'allure-results'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/AllureResults'
+      - task: CopyFiles@2
+        displayName: 'Copy Files: AllureReports'
+        condition: always()
+        inputs:
+          SourceFolder: 'allure-report'
+          TargetFolder: '$(Build.ArtifactStagingDirectory)/AllureReports'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: AllureResults'
+        condition: always()
+        inputs:
+          ArtifactName: 'allure-results'
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/AllureResults'
+
+      - task: PublishBuildArtifacts@1
+        displayName: 'Publish Artifact: AllureReports'
+        condition: always()
+        inputs:
+          ArtifactName: 'allure-report'
+          PathtoPublish: '$(Build.ArtifactStagingDirectory)/AllureReports'

@@ -1,0 +1,57 @@
+parameters:
+- name: evn
+  displayName: Test Environment 
+  type: string
+    # - "https://stgmtmaster.zinfi.net"
+    # - "https://stgdemo.zinfi.net"
+
+- name: tag
+  displayName: Tag
+  type: string
+  values:
+    - sanity
+    - Regression
+
+- name: priority
+  displayName: Priority
+  type: string
+  values:
+    - P0
+    - P1
+    - P2
+    - P3
+
+trigger:
+- none
+
+pool: 
+
+steps:
+- task: MavenAuthenticate@0
+  inputs:
+    mavenServiceConnections: 'Maven SNAPSHOT, Maven-release'
+
+- task: Maven@3
+  inputs:
+    mavenPomFile: 'OOTB/pom.xml'
+    goals: 'clean test'
+    options: '-DwebsiteToTest=$(evn) -Dtag=$(tag) -Dpriority=$(priority)'
+    publishJUnitResults: true
+    testResultsFiles: '**/surefire-reports/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    jdkVersionOption: '1.11'
+    mavenVersionOption: 'Default'
+    mavenOptions: '-Xmx3072m'
+    mavenAuthenticateFeed: false
+    effectivePomSkip: false
+    sonarQubeRunAnalysis: false
+
+- script: |
+    mvn allure:report
+    mvn allure:serve
+  displayName: 'Generate Allure Reports'
+
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathtoPublish: '$(Build.ArtifactStagingDirectory)/AllureReports'
+    artifactName: 'AllureReports'

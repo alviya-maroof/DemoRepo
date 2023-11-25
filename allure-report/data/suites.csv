@@ -1,0 +1,29 @@
+"Status","Start Time","Stop Time","Duration in ms","Parent Suite","Suite","Sub Suite","Test Class","Test Method","Name","Description"
+"passed","Fri Nov 24 17:22:11 IST 2023","Fri Nov 24 17:23:45 IST 2023","93783","TestSuite","sanity","","webactionClass","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration",""
+"passed","Fri Nov 24 17:13:56 IST 2023","Fri Nov 24 17:15:31 IST 2023","94986","TestSuite","sanity","","webactionClass","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration",""
+"passed","Fri Nov 24 16:48:00 IST 2023","Fri Nov 24 16:49:36 IST 2023","95733","TestSuite","sanity","","webactionClass","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration",""
+"passed","Fri Nov 24 17:28:27 IST 2023","Fri Nov 24 17:30:01 IST 2023","94109","TestSuite","sanity","","webactionClass","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration","ZINFIAD-001: Verify user is able to view the Signup page
+Scroll to the element
+Show the Partner Help Desk block on the right
+Verify the user registration",""
